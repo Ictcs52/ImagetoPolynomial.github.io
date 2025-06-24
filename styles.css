@@ -1,86 +1,99 @@
-/* Custom Styles for Image to Polynomial Web App */
+/* 
+ * Custom Styles for Image to Polynomial Web App
+ * ไฟล์ CSS สำหรับจัดแต่งหน้าตาเว็บแอปพลิเคชัน
+ * 
+ * โครงสร้างไฟล์:
+ * 1. CSS Variables (ตัวแปร CSS)
+ * 2. Base Styles (สไตล์พื้นฐาน)
+ * 3. Component Styles (สไตล์ส่วนประกอบต่างๆ)
+ * 4. Animations (ภาพเคลื่อนไหว)
+ * 5. Responsive Design (การรองรับหน้าจอขนาดต่างๆ)
+ */
 
+/* CSS Variables - ตัวแปร CSS ที่ใช้ทั่วทั้งเว็บ */
+/* ช่วยให้การจัดการสีและค่าต่างๆ ง่ายขึ้น */
 :root {
-    --primary-color: #009688;
-    --primary-dark: #313187;
-    --secondary-color: #6c757d;
-    --success-color: #28a745;
-    --warning-color: #ffc107;
-    --danger-color: #dc3545;
-    --info-color: #00bcd4;
-    --light-color: #f8f9fa;
-    --dark-color: #343a40;
+    /* สีหลักของเว็บ - Primary Colors */
+    --primary-color: #009688;          /* สีเขียวหลัก (Teal) */
+    --primary-dark: #313187;           /* สีน้ำเงินเข้ม */
+    --secondary-color: #6c757d;        /* สีเทา */
+    --success-color: #28a745;          /* สีเขียว (สำเร็จ) */
+    --warning-color: #ffc107;          /* สีเหลือง (คำเตือน) */
+    --danger-color: #dc3545;           /* สีแดง (อันตราย) */
+    --info-color: #00bcd4;             /* สีฟ้า (ข้อมูล) */
+    --light-color: #f8f9fa;            /* สีขาวอ่อน */
+    --dark-color: #343a40;             /* สีเทาเข้ม */
+    
+    /* Gradients - การไล่สี */
     --gradient-primary: linear-gradient(45deg, rgba(0, 152, 139, 1) 25%, rgba(49, 49, 135, 1) 85%);
     --gradient-secondary: linear-gradient(135deg, #26a69a 0%, #5c6bc0 100%);
     --gradient-success: linear-gradient(135deg, #00bcd4 0%, #009688 100%);
     --gradient-hero: linear-gradient(45deg, rgba(0, 152, 139, 1) 25%, rgba(49, 49, 135, 1) 85%);
-    --shadow-light: 0 4px 15px rgba(0, 152, 139, 0.15);
-    --shadow-medium: 0 8px 25px rgba(0, 152, 139, 0.2);
-    --shadow-heavy: 0 15px 35px rgba(0, 152, 139, 0.25);
-    --border-radius: 12px;
-    --border-radius-lg: 20px;
-}
-
+    
+    /* เงา - Shadows */
+    --shadow-light: 0 4px 15px rgba(0, 152, 139, 0.15);    /* เงาอ่อน */
+    --shadow-medium: 0 8px 25px rgba(0, 152, 139, 0.2);    /* เงากลาง */
+/* สไตล์พื้นฐานของหน้าเว็บ - Base Styles */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    line-height: 1.6;
-    background: linear-gradient(45deg, rgba(0, 152, 139, 1) 25%, rgba(49, 49, 135, 1) 85%);
-    min-height: 100vh;
-    background-attachment: fixed;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* ฟอนต์ที่ใช้ */
+    line-height: 1.6;                                            /* ระยะห่างบรรทัด */
+    background: linear-gradient(45deg, rgba(0, 152, 139, 1) 25%, rgba(49, 49, 135, 1) 85%); /* พื้นหลังไล่สี */
+    min-height: 100vh;                                           /* ความสูงขั้นต่ำเท่ากับหน้าจอ */
+    background-attachment: fixed;                                /* พื้นหลังไม่เลื่อนตาม scroll */
 }
 
-/* Typography */
+/* การจัดแต่งข้อความ - Typography */
 h1, h2, h3, h4, h5, h6 {
-    font-weight: 600;
-}
-
-/* Navigation */
+    font-weight: 600; /* ความหนาของฟอนต์ */
+}   min-height: 100vh;
+/* เมนูนำทาง - Navigation Bar */
 .navbar {
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
-    background: rgba(0, 152, 139, 0.9) !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 15px rgba(0, 152, 139, 0.3);
+    /* เอฟเฟกต์เบลอพื้นหลัง (Glass Effect) */
+    -webkit-backdrop-filter: blur(10px);   /* สำหรับ Safari */
+    backdrop-filter: blur(10px);           /* สำหรับเบราว์เซอร์อื่นๆ */
+    background: rgba(0, 152, 139, 0.9) !important; /* พื้นหลังโปร่งใส */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* ขอบล่าง */
+    box-shadow: 0 4px 15px rgba(0, 152, 139, 0.3);     /* เงา */
 }
 
 .navbar-brand {
-    font-weight: 700;
-    font-size: 1.4rem;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-weight: 700;      /* ความหนาฟอนต์ */
+    font-size: 1.4rem;     /* ขนาดฟอนต์ */
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* เงาข้อความ */
 }
 
 .nav-link {
-    font-weight: 500;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
+    font-weight: 500;                    /* ความหนาฟอนต์ */
+    transition: all 0.3s ease;          /* การเปลี่ยนแปลงแบบนุ่มนวล */
+    position: relative;                  /* สำหรับการวาง pseudo-element */
+    overflow: hidden;                    /* ซ่อนส่วนที่เกิน */
 }
 
+/* เอฟเฟกต์เส้นใต้เมื่อ hover */
 .nav-link::before {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: white;
-    transition: width 0.3s ease;
+    content: '';              /* เนื้อหาว่าง */
+    position: absolute;       /* ตำแหน่งแน่นอน */
+    bottom: 0;               /* อยู่ด้านล่าง */
+    left: 0;                 /* เริ่มจากซ้าย */
+    width: 0;                /* ความกว้างเริ่มต้น 0 */
+    height: 2px;             /* ความสูง 2px */
+    background: white;       /* สีขาว */
+    transition: width 0.3s ease; /* การเปลี่ยนแปลงความกว้าง */
 }
 
 .nav-link:hover::before {
-    width: 100%;
-}
-
-/* Hero Section */
+    width: 100%; /* เมื่อ hover ให้ความกว้าง 100% */
+/* ส่วน Hero (ส่วนแนะนำหลัก) - Hero Section */
 .hero-section {
     background: linear-gradient(45deg, rgba(0, 152, 139, 1) 25%, rgba(49, 49, 135, 1) 85%);
-    min-height: 70vh;
-    display: flex;
-    align-items: center;
-    position: relative;
-    overflow: hidden;
+    min-height: 70vh;           /* ความสูงขั้นต่ำ 70% ของหน้าจอ */
+    display: flex;              /* ใช้ Flexbox */
+    align-items: center;        /* จัดกึ่งกลางแนวตั้ง */
+    position: relative;         /* สำหรับการวาง pseudo-element */
+    overflow: hidden;           /* ซ่อนส่วนที่เกิน */
 }
 
+/* เอฟเฟกต์พื้นหลังเคลื่อนไหว */
 .hero-section::before {
     content: '';
     position: absolute;
@@ -88,13 +101,15 @@ h1, h2, h3, h4, h5, h6 {
     left: 0;
     right: 0;
     bottom: 0;
+    /* สร้างจุดเล็กๆ เคลื่อนไหวด้วย SVG */
     background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.1)"/><circle cx="90" cy="40" r="0.5" fill="rgba(255,255,255,0.1)"/></svg>');
-    animation: float 20s infinite linear;
+    animation: float 20s infinite linear; /* ภาพเคลื่อนไหวต่อเนื่อง */
 }
 
+/* ภาพเคลื่อนไหวพื้นหลัง */
 @keyframes float {
-    0% { transform: translateY(0px) rotate(0deg); }
-    100% { transform: translateY(-100px) rotate(360deg); }
+    0% { transform: translateY(0px) rotate(0deg); }      /* เริ่มต้น */
+    100% { transform: translateY(-100px) rotate(360deg); } /* สิ้นสุด */
 }
 
 .bg-gradient-primary {
@@ -102,84 +117,86 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .display-4 {
-    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
+/* ภาพเคลื่อนไหวใน Hero Section */
 /* Hero Animation */
 .hero-title {
-    animation: slideInLeft 1s ease-out;
+    animation: slideInLeft 1s ease-out; /* เลื่อนเข้าจากซ้าย */
 }
 
 .hero-subtitle {
-    animation: slideInLeft 1.2s ease-out;
+    animation: slideInLeft 1.2s ease-out; /* เลื่อนเข้าจากซ้าย ช้ากว่า */
 }
 
 .hero-buttons {
-    animation: slideInUp 1.4s ease-out;
+    animation: slideInUp 1.4s ease-out; /* เลื่อนขึ้นจากล่าง */
 }
 
+/* ภาพเคลื่อนไหว: เลื่อนจากซ้าย */
 @keyframes slideInLeft {
     from {
-        opacity: 0;
-        transform: translateX(-50px);
+        opacity: 0;                    /* เริ่มต้นโปร่งใส */
+        transform: translateX(-50px);  /* อยู่ทางซ้าย 50px */
     }
     to {
-        opacity: 1;
-        transform: translateX(0);
+        opacity: 1;                    /* ทึบแสง */
+        transform: translateX(0);      /* กลับตำแหน่งปกติ */
     }
 }
 
+/* ภาพเคลื่อนไหว: เลื่อนขึ้นจากล่าง */
 @keyframes slideInUp {
     from {
-        opacity: 0;
-        transform: translateY(30px);
+        opacity: 0;                   /* เริ่มต้นโปร่งใส */
+        transform: translateY(30px);  /* อยู่ด้านล่าง 30px */
     }
     to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
+        opacity: 1;                   /* ทึบแสง */
+        transform: translateY(0);     /* กลับตำแหน่งปกติ */
+/* ไอคอนลอยในส่วน Hero */
 /* Floating Icon Animation */
 .floating-icon {
-    animation: floatIcon 3s ease-in-out infinite;
+    animation: floatIcon 3s ease-in-out infinite; /* ลอยขึ้นลงต่อเนื่อง */
 }
 
+/* ภาพเคลื่อนไหว: ลอยขึ้นลง */
 @keyframes floatIcon {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-20px); }
+    0%, 100% { transform: translateY(0px); }    /* ตำแหน่งเริ่มต้นและสิ้นสุด */
+    50% { transform: translateY(-20px); }       /* ลอยขึ้น 20px */
 }
 
 .hero-decoration {
-    position: relative;
-    margin-top: 2rem;
+    position: relative;  /* สำหรับการวาง floating elements */
+    margin-top: 2rem;   /* ระยะห่างด้านบน */
 }
 
+/* องค์ประกอบลอย (emoji) */
 .floating-element {
-    position: absolute;
-    font-size: 2rem;
-    opacity: 0.7;
-    animation: floatAround 6s ease-in-out infinite;
+    position: absolute;                            /* ตำแหน่งแน่นอน */
+    font-size: 2rem;                              /* ขนาดฟอนต์ */
+    opacity: 0.7;                                 /* ความโปร่งใส */
+    animation: floatAround 6s ease-in-out infinite; /* ภาพเคลื่อนไหวรอบ */
 }
 
+/* ตำแหน่งและจังหวะของแต่ละ element */
 .floating-element:nth-child(1) {
     top: -50px;
     left: 50px;
-    animation-delay: 0s;
+    animation-delay: 0s;   /* เริ่มทันที */
 }
 
 .floating-element:nth-child(2) {
     top: -30px;
     right: 30px;
-    animation-delay: 2s;
+    animation-delay: 2s;   /* เริ่มหลัง 2 วินาที */
 }
 
 .floating-element:nth-child(3) {
     bottom: -40px;
     left: 30px;
-    animation-delay: 4s;
+    animation-delay: 4s;   /* เริ่มหลัง 4 วินาที */
 }
 
+/* ภาพเคลื่อนไหว: ลอยรอบๆ */
 @keyframes floatAround {
     0%, 100% { 
         transform: translateY(0px) rotate(0deg);
@@ -190,23 +207,19 @@ h1, h2, h3, h4, h5, h6 {
         opacity: 0.9;
     }
     66% { 
-        transform: translateY(10px) rotate(240deg);
-        opacity: 0.5;
-    }
-}
-
-/* Upload Area */
+/* พื้นที่อัปโหลดไฟล์ - Upload Area */
 .upload-area {
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    cursor: pointer;
-    background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9));
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
-    border: 2px dashed rgba(0, 152, 139, 0.4);
-    position: relative;
-    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* การเปลี่ยนแปลงแบบนุ่มนวล */
+    cursor: pointer;                                     /* เปลี่ยนเคอร์เซอร์เป็นมือ */
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9)); /* พื้นหลังโปร่งใส */
+    -webkit-backdrop-filter: blur(10px);  /* เอฟเฟกต์เบลอ (Safari) */
+    backdrop-filter: blur(10px);          /* เอฟเฟกต์เบลอ */
+    border: 2px dashed rgba(0, 152, 139, 0.4); /* ขอบเส้นประ */
+    position: relative;                   /* สำหรับ pseudo-element */
+    overflow: hidden;                     /* ซ่อนส่วนที่เกิน */
 }
 
+/* เอฟเฟกต์แสงวิ่ง (Shimmer Effect) */
 .upload-area::before {
     content: '';
     position: absolute;
@@ -215,53 +228,80 @@ h1, h2, h3, h4, h5, h6 {
     width: 200%;
     height: 200%;
     background: linear-gradient(45deg, transparent, rgba(0, 152, 139, 0.15), transparent);
-    transform: rotate(45deg);
+    transform: rotate(45deg);   /* หมุน 45 องศา */
     transition: all 0.6s ease;
-    opacity: 0;
+    opacity: 0;                 /* ซ่อนไว้ก่อน */
 }
 
+/* เมื่อ hover ที่พื้นที่อัปโหลด */
 .upload-area:hover {
     background: linear-gradient(145deg, rgba(0, 152, 139, 0.1), rgba(49, 49, 135, 0.05));
-    border-color: var(--primary-color) !important;
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 152, 139, 0.2);
+    border-color: var(--primary-color) !important;  /* เปลี่ยนสีขอบ */
+    transform: translateY(-5px);                     /* ลอยขึ้น 5px */
+    box-shadow: 0 8px 25px rgba(0, 152, 139, 0.2);  /* เพิ่มเงา */
 }
 
 .upload-area:hover::before {
-    opacity: 1;
-    animation: shimmer 1.5s ease-in-out;
+    opacity: 1;                              /* แสดงเอฟเฟกต์แสง */
+    animation: shimmer 1.5s ease-in-out;     /* เริ่มภาพเคลื่อนไหวแสงวิ่ง */
 }
 
+/* ภาพเคลื่อนไหวแสงวิ่ง */
 @keyframes shimmer {
     0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
     100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
 }
 
+/* เมื่อลากไฟล์มาวาง */
 .upload-area.drag-over {
     background: linear-gradient(145deg, rgba(40, 167, 69, 0.15), rgba(0, 188, 212, 0.1));
-    border-color: var(--success-color) !important;
-    transform: scale(1.02);
-    box-shadow: 0 15px 35px rgba(40, 167, 69, 0.25);
-}
-
-/* Cards */
+    border-color: var(--success-color) !important; /* เปลี่ยนเป็นสีเขียว */
+/* การ์ด - Cards */
 .card {
-    border: none;
-    border-radius: var(--border-radius);
-    overflow: hidden;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);    background: rgba(255, 255, 255, 0.95);
-    -webkit-backdrop-filter: blur(10px);
+    border: none;                                        /* ไม่มีขอบ */
+    border-radius: var(--border-radius);                 /* มุมโค้ง */
+    overflow: hidden;                                    /* ซ่อนส่วนที่เกิน */
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);  /* การเปลี่ยนแปลงนุ่มนวล */
+    background: rgba(255, 255, 255, 0.95);               /* พื้นหลังขาวโปร่งใส */
+    -webkit-backdrop-filter: blur(10px);                 /* เอฟเฟกต์เบลอ */
     backdrop-filter: blur(10px);
-    box-shadow: var(--shadow-light);
+    box-shadow: var(--shadow-light);                     /* เงาอ่อน */
 }
 
 .card:hover {
-    transform: translateY(-8px);
-    box-shadow: var(--shadow-heavy);
+    transform: translateY(-8px);    /* ลอยขึ้นเมื่อ hover */
+    box-shadow: var(--shadow-heavy); /* เงาเข้มขึ้น */
 }
 
+/* หัวการ์ด */
 .card-header {
-    background: var(--gradient-primary) !important;
+    background: var(--gradient-primary) !important; /* พื้นหลังไล่สี */
+    color: white !important;                        /* ข้อความสีขาว */
+    border-bottom: none;                           /* ไม่มีขอบล่าง */
+    padding: 1.5rem;                              /* ระยะห่างภายใน */
+    position: relative;                           /* สำหรับ pseudo-element */
+    overflow: hidden;                             /* ซ่อนส่วนที่เกิน */
+}
+
+/* เอฟเฟกต์แสงวิ่งในหัวการ์ด */
+.card-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;      /* เริ่มนอกหน้าจอซ้าย */
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.8s ease;
+}
+
+.card:hover .card-header::before {
+    left: 100%;       /* เลื่อนออกทางขวา */
+}
+
+.shadow-lg {
+    box-shadow: var(--shadow-heavy) !important;
+}   background: var(--gradient-primary) !important;
     color: white !important;
     border-bottom: none;
     padding: 1.5rem;
@@ -276,29 +316,18 @@ h1, h2, h3, h4, h5, h6 {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.8s ease;
-}
-
-.card:hover .card-header::before {
-    left: 100%;
-}
-
-.shadow-lg {
-    box-shadow: var(--shadow-heavy) !important;
-}
-
-/* Buttons */
+/* ปุ่มต่างๆ - Buttons */
 .btn {
-    border-radius: var(--border-radius);
-    font-weight: 600;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border: none;
-    position: relative;
-    overflow: hidden;
-    text-transform: none;
+    border-radius: var(--border-radius);                 /* มุมโค้ง */
+    font-weight: 600;                                   /* ความหนาฟอนต์ */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* การเปลี่ยนแปลงนุ่มนวล */
+    border: none;                                       /* ไม่มีขอบ */
+    position: relative;                                 /* สำหรับ pseudo-element */
+    overflow: hidden;                                   /* ซ่อนส่วนที่เกิน */
+    text-transform: none;                              /* ไม่เปลี่ยนตัวอักษร */
 }
 
+/* เอฟเฟกต์คลื่นเมื่อคลิก (Ripple Effect) */
 .btn::before {
     content: '';
     position: absolute;
@@ -306,210 +335,230 @@ h1, h2, h3, h4, h5, h6 {
     left: 50%;
     width: 0;
     height: 0;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    transition: width 0.6s, height 0.6s;
+    background: rgba(255, 255, 255, 0.2);  /* วงกลมขาวโปร่งใส */
+    border-radius: 50%;                    /* ทำให้เป็นวงกลม */
+    transform: translate(-50%, -50%);      /* จัดกึ่งกลาง */
+    transition: width 0.6s, height 0.6s;  /* การขยายแบบนุ่มนวล */
 }
 
 .btn:hover::before {
-    width: 300px;
+    width: 300px;   /* ขยายเป็น 300px */
     height: 300px;
 }
 
 .btn:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-medium);
+    transform: translateY(-3px);    /* ลอยขึ้นเมื่อ hover */
+    box-shadow: var(--shadow-medium); /* เพิ่มเงา */
 }
 
+/* ปุ่มสีหลัก */
 .btn-primary {
     background: linear-gradient(45deg, rgba(0, 152, 139, 1) 25%, rgba(49, 49, 135, 1) 85%);
     box-shadow: 0 4px 15px rgba(0, 152, 139, 0.4);
 }
 
+/* ปุ่มสีเขียว */
 .btn-success {
     background: linear-gradient(135deg, #00bcd4 0%, #009688 100%);
     box-shadow: 0 4px 15px rgba(0, 188, 212, 0.4);
 }
 
+/* ปุ่มขนาดใหญ่ */
 .btn-lg {
-    padding: 15px 35px;
-    font-size: 1.1rem;
-    border-radius: var(--border-radius-lg);
+    padding: 15px 35px;                    /* ระยะห่างภายใน */
+    font-size: 1.1rem;                     /* ขนาดฟอนต์ */
+    border-radius: var(--border-radius-lg); /* มุมโค้งใหญ่ */
+}   box-shadow: 0 4px 15px rgba(0, 152, 139, 0.4);
 }
 
-/* Progress Bar */
+/* แถบแสดงความคืบหน้า - Progress Bar */
 .progress {
-    height: 12px;
-    border-radius: 10px;
-    background: rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    height: 12px;                              /* ความสูง */
+    border-radius: 10px;                       /* มุมโค้ง */
+    background: rgba(0, 0, 0, 0.1);            /* พื้นหลังเทาอ่อน */
+    overflow: hidden;                          /* ซ่อนส่วนที่เกิน */
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1); /* เงาด้านใน */
 }
 
 .progress-bar {
     background: linear-gradient(45deg, rgba(0, 152, 139, 1) 25%, rgba(49, 49, 135, 1) 85%);
-    border-radius: 10px;
-    transition: width 0.6s ease;
-    box-shadow: 0 2px 4px rgba(0, 152, 139, 0.3);
+    border-radius: 10px;                       /* มุมโค้ง */
+    transition: width 0.6s ease;              /* การเปลี่ยนแปลงความกว้าง */
+    box-shadow: 0 2px 4px rgba(0, 152, 139, 0.3); /* เงา */
 }
 
 #progressBar {
-    width: 0%;
+    width: 0%; /* เริ่มต้นที่ 0% */
 }
 
+/* เอฟเฟกต์แสงวิ่งใน Progress Bar */
 .progress-bar::before {
     content: '';
     position: absolute;
     top: 0;
-    left: -100%;
+    left: -100%;      /* เริ่มนอกหน้าจอซ้าย */
     width: 100%;
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-    animation: progressShine 2s infinite;
+    animation: progressShine 2s infinite; /* ภาพเคลื่อนไหวแสงวิ่ง */
 }
 
+/* ภาพเคลื่อนไหวแสงวิ่งใน Progress Bar */
 @keyframes progressShine {
-    0% { left: -100%; }
-    100% { left: 100%; }
+    0% { left: -100%; }  /* เริ่มซ้าย */
+    100% { left: 100%; } /* จบขวา */
+}   top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+/* การ์ดแสดงสถิติ - Statistics Cards */
+.card.text-center h3 {
+    font-size: 2.8rem;                       /* ขนาดฟอนต์ใหญ่ */
+    font-weight: 700;                        /* ความหนาฟอนต์ */
+    margin-bottom: 0;                        /* ไม่มีระยะห่างด้านล่าง */
+    background: var(--gradient-primary);     /* พื้นหลังไล่สี */
+    -webkit-background-clip: text;           /* ตัดพื้นหลังตามข้อความ (WebKit) */
+    -webkit-text-fill-color: transparent;   /* ทำข้อความโปร่งใส (WebKit) */
+    background-clip: text;                   /* ตัดพื้นหลังตามข้อความ */
 }
 
-/* Statistics Cards */
-.card.text-center h3 {
-    font-size: 2.8rem;
-    font-weight: 700;
-    margin-bottom: 0;
-    background: var(--gradient-primary);
+.card.text-center .fa-2x {
+    margin-bottom: 1rem;                     /* ระยะห่างด้านล่าง */
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1)); /* เงาไอคอน */
+}   background: var(--gradient-primary);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
-
-.card.text-center .fa-2x {
-    margin-bottom: 1rem;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-}
-
-/* Charts */
+/* กราฟและแผนภูมิ - Charts */
 canvas {
-    max-width: 100%;
-    height: auto;
-    border-radius: var(--border-radius);
+    max-width: 100%;                    /* ความกว้างสูงสุด 100% */
+    height: auto;                       /* ความสูงปรับอัตโนมัติ */
+    border-radius: var(--border-radius); /* มุมโค้ง */
 }
 
-/* Equation Display */
+/* การแสดงสมการ - Equation Display */
 .equation-card {
-    background: linear-gradient(145deg, #f8f9fa 0%, #e9ecef 100%);
-    border-left: 4px solid var(--primary-color);
-    padding: 1.5rem;
-    margin-bottom: 1rem;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-light);
-    transition: all 0.3s ease;
+    background: linear-gradient(145deg, #f8f9fa 0%, #e9ecef 100%); /* พื้นหลังไล่สี */
+    border-left: 4px solid var(--primary-color);                  /* ขอบซ้ายสีหลัก */
+    padding: 1.5rem;                                              /* ระยะห่างภายใน */
+    margin-bottom: 1rem;                                          /* ระยะห่างด้านล่าง */
+    border-radius: var(--border-radius);                          /* มุมโค้ง */
+    box-shadow: var(--shadow-light);                              /* เงาอ่อน */
+    transition: all 0.3s ease;                                    /* การเปลี่ยนแปลงนุ่มนวล */
 }
 
 .equation-card:hover {
-    transform: translateX(5px);
-    box-shadow: var(--shadow-medium);
+    transform: translateX(5px);         /* เลื่อนไปทางขวาเมื่อ hover */
+    box-shadow: var(--shadow-medium);   /* เงาเข้มขึ้น */
 }
 
 .equation-card h6 {
-    color: var(--primary-color);
-    font-weight: 600;
-    margin-bottom: 0.8rem;
+    color: var(--primary-color);        /* สีหลัก */
+    font-weight: 600;                   /* ความหนาฟอนต์ */
+    margin-bottom: 0.8rem;              /* ระยะห่างด้านล่าง */
 }
 
 .equation-text {
-    font-family: 'Courier New', monospace;
-    background: white;
+    font-family: 'Courier New', monospace; /* ฟอนต์แบบ monospace สำหรับโค้ด */
+    background: white;                     /* พื้นหลังขาว */
+    padding: 1rem;                        /* ระยะห่างภายใน */
+    border-radius: var(--border-radius);   /* มุมโค้ง */
+    font-size: 1rem;                      /* ขนาดฟอนต์ */
+    border: 1px solid #dee2e6;            /* ขอบ */
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05); /* เงาด้านใน */
+}   background: white;
     padding: 1rem;
     border-radius: var(--border-radius);
     font-size: 1rem;
     border: 1px solid #dee2e6;
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-/* Form Controls */
+/* ฟอร์มและอินพุตต่างๆ - Form Controls */
 .form-range {
-    height: 8px;
+    height: 8px; /* ความสูงของ slider */
 }
 
+/* ปุ่มเลื่อนใน range slider */
 .form-range::-webkit-slider-thumb {
-    height: 24px;
-    width: 24px;
-    border-radius: 50%;
-    background: var(--primary-color);
-    border: 3px solid white;
-    box-shadow: var(--shadow-light);
-    transition: all 0.3s ease;
+    height: 24px;                           /* ความสูง */
+    width: 24px;                           /* ความกว้าง */
+    border-radius: 50%;                    /* ทำให้เป็นวงกลม */
+    background: var(--primary-color);      /* สีหลัก */
+    border: 3px solid white;               /* ขอบสีขาว */
+    box-shadow: var(--shadow-light);       /* เงาอ่อน */
+    transition: all 0.3s ease;            /* การเปลี่ยนแปลงนุ่มนวล */
 }
 
 .form-range::-webkit-slider-thumb:hover {
-    transform: scale(1.2);
-    box-shadow: var(--shadow-medium);
+    transform: scale(1.2);              /* ขยายเมื่อ hover */
+    box-shadow: var(--shadow-medium);   /* เงาเข้มขึ้น */
 }
 
+/* Checkbox เมื่อถูกเลือก */
 .form-check-input:checked {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-}
-
-/* Footer */
+    background-color: var(--primary-color);                    /* สีพื้นหลัง */
+    border-color: var(--primary-color);                       /* สีขอบ */
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);      /* เงารอบๆ */
+/* ส่วนท้ายเว็บ - Footer */
 footer {
     background: linear-gradient(135deg, rgba(0, 152, 139, 0.9) 0%, rgba(49, 49, 135, 0.9) 100%);
-    position: relative;
-    overflow: hidden;
+    position: relative;    /* สำหรับ pseudo-element */
+    overflow: hidden;      /* ซ่อนส่วนที่เกิน */
 }
 
+/* เส้นบนสุดของ Footer */
 footer::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    height: 1px;
+    height: 1px;           /* ความสูง 1px */
     background: linear-gradient(45deg, rgba(0, 152, 139, 1) 25%, rgba(49, 49, 135, 1) 85%);
 }
 
+/* ป้ายกำกับเทคโนโลยี - Technology Badges */
 .badge {
-    font-size: 0.85rem;
-    padding: 0.6rem 1rem;
-    border-radius: var(--border-radius);
-    font-weight: 500;
-    transition: all 0.3s ease;
+    font-size: 0.85rem;                    /* ขนาดฟอนต์ */
+    padding: 0.6rem 1rem;                  /* ระยะห่างภายใน */
+    border-radius: var(--border-radius);   /* มุมโค้ง */
+    font-weight: 500;                      /* ความหนาฟอนต์ */
+    transition: all 0.3s ease;            /* การเปลี่ยนแปลงนุ่มนวล */
 }
 
 .badge:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-light);
+    transform: translateY(-2px);    /* ลอยขึ้นเมื่อ hover */
+    box-shadow: var(--shadow-light); /* เพิ่มเงา */
 }
+.badge:hover {
+/* ภาพเคลื่อนไหวและเอฟเฟกต์พิเศษ - Animations & Effects */
 
-/* Loading Animation */
+/* วงล้อหมุนโหลด - Loading Animation */
 .loading-spinner {
-    width: 50px;
-    height: 50px;
-    border: 5px solid rgba(102, 126, 234, 0.1);
-    border-top: 5px solid var(--primary-color);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 0 auto;
+    width: 50px;                                    /* ความกว้าง */
+    height: 50px;                                   /* ความสูง */
+    border: 5px solid rgba(102, 126, 234, 0.1);    /* ขอบโปร่งใส */
+    border-top: 5px solid var(--primary-color);    /* ขอบบนสีหลัก */
+    border-radius: 50%;                             /* ทำให้เป็นวงกลม */
+    animation: spin 1s linear infinite;             /* หมุนต่อเนื่อง */
+    margin: 0 auto;                                /* จัดกึ่งกลาง */
 }
 
+/* ภาพเคลื่อนไหวหมุน */
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% { transform: rotate(0deg); }      /* เริ่มต้น */
+    100% { transform: rotate(360deg); }  /* หมุนครบรอบ */
 }
 
-/* Animations */
+/* ภาพเคลื่อนไหวเลื่อนขึ้น */
 @keyframes fadeInUp {
     from {
-        opacity: 0;
-        transform: translateY(30px);
+        opacity: 0;                   /* เริ่มต้นโปร่งใส */
+        transform: translateY(30px);  /* อยู่ด้านล่าง 30px */
     }
     to {
-        opacity: 1;
-        transform: translateY(0);
+        opacity: 1;                   /* ทึบแสง */
+        transform: translateY(0);     /* กลับตำแหน่งปกติ */
     }
 }
 
@@ -517,133 +566,146 @@ footer::before {
     animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
+/* ภาพเคลื่อนไหวเต้น */
 @keyframes pulse {
     0%, 100% {
-        transform: scale(1);
+        transform: scale(1);     /* ขนาดปกติ */
     }
     50% {
-        transform: scale(1.05);
+        transform: scale(1.05);  /* ขยายเล็กน้อย */
     }
 }
 
-.pulse {
-    animation: pulse 2s infinite;
-}
-
-/* Image Preview */
+/* การแสดงตัวอย่างภาพ - Image Preview */
 #previewImage {
-    max-height: 350px;
-    object-fit: contain;
-    border: 2px solid #dee2e6;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-light);
-    transition: all 0.3s ease;
+    max-height: 350px;                    /* ความสูงสูงสุด */
+    object-fit: contain;                  /* รักษาสัดส่วนภาพ */
+    border: 2px solid #dee2e6;            /* ขอบ */
+    border-radius: var(--border-radius);  /* มุมโค้ง */
+    box-shadow: var(--shadow-light);      /* เงาอ่อน */
+    transition: all 0.3s ease;           /* การเปลี่ยนแปลงนุ่มนวล */
 }
 
 #previewImage:hover {
-    transform: scale(1.02);
-    box-shadow: var(--shadow-medium);
-}
-
-/* Alert Improvements */
-.alert {
-    border: none;
-    border-radius: var(--border-radius);
-    padding: 1rem 1.5rem;
-    margin-bottom: 1.5rem;
+    transform: scale(1.02);             /* ขยายเล็กน้อยเมื่อ hover */
+    box-shadow: var(--shadow-medium);   /* เงาเข้มขึ้น */
+}   border-radius: var(--border-radius);
     box-shadow: var(--shadow-light);
-    border-left: 4px solid;
+/* การปรับปรุงการแจ้งเตือน - Alert Improvements */
+.alert {
+    border: none;                        /* ไม่มีขอบ */
+    border-radius: var(--border-radius); /* มุมโค้ง */
+    padding: 1rem 1.5rem;               /* ระยะห่างภายใน */
+    margin-bottom: 1.5rem;              /* ระยะห่างด้านล่าง */
+    box-shadow: var(--shadow-light);     /* เงาอ่อน */
+    border-left: 4px solid;             /* ขอบซ้าย 4px */
 }
 
+/* การแจ้งเตือนสำเร็จ */
 .alert-success {
-    background: linear-gradient(145deg, #d4edda, #c3e6cb);
-    border-left-color: var(--success-color);
-    color: #155724;
+    background: linear-gradient(145deg, #d4edda, #c3e6cb); /* พื้นหลังไล่สีเขียว */
+    border-left-color: var(--success-color);              /* ขอบซ้ายสีเขียว */
+    color: #155724;                                       /* ข้อความสีเขียวเข้ม */
 }
 
+/* การแจ้งเตือนอันตราย */
 .alert-danger {
-    background: linear-gradient(145deg, #f8d7da, #f5c6cb);
-    border-left-color: var(--danger-color);
-    color: #721c24;
+    background: linear-gradient(145deg, #f8d7da, #f5c6cb); /* พื้นหลังไล่สีแดง */
+    border-left-color: var(--danger-color);               /* ขอบซ้ายสีแดง */
+    color: #721c24;                                       /* ข้อความสีแดงเข้ม */
 }
 
+/* การแจ้งเตือนข้อมูล */
 .alert-info {
-    background: linear-gradient(145deg, #d1ecf1, #bee5eb);
-    border-left-color: var(--info-color);
-    color: #0c5460;
-}
-
-/* Section backgrounds */
+    background: linear-gradient(145deg, #d1ecf1, #bee5eb); /* พื้นหลังไล่สีฟ้า */
+    border-left-color: var(--info-color);                 /* ขอบซ้ายสีฟ้า */
+/* พื้นหลังของส่วนต่างๆ - Section backgrounds */
 .bg-upload {
-    background: rgba(255, 255, 255, 0.1);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.1);     /* พื้นหลังขาวโปร่งใส 10% */
+    -webkit-backdrop-filter: blur(10px);      /* เอฟเฟกต์เบลอ (Safari) */
+    backdrop-filter: blur(10px);              /* เอฟเฟกต์เบลอ */
 }
 
 .bg-results {
-    background: rgba(255, 255, 255, 0.95);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.95);    /* พื้นหลังขาวโปร่งใส 95% */
+    -webkit-backdrop-filter: blur(10px);      /* เอฟเฟกต์เบลอ (Safari) */
+    backdrop-filter: blur(10px);              /* เอฟเฟกต์เบลอ */
 }
 
 .bg-about {
-    background: rgba(255, 255, 255, 0.9);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.9);     /* พื้นหลังขาวโปร่งใส 90% */
+    -webkit-backdrop-filter: blur(10px);      /* เอฟเฟกต์เบลอ (Safari) */
+    backdrop-filter: blur(10px);              /* เอฟเฟกต์เบลอ */
 }
+.bg-results {
+/* การออกแบบที่รองรับหน้าจอขนาดต่างๆ - Responsive Design */
 
-/* Responsive Design */
+/* สำหรับแท็บเล็ตและมือถือ (768px ลงไป) */
 @media (max-width: 768px) {
     .hero-section {
-        min-height: 60vh;
-        text-align: center;
+        min-height: 60vh;    /* ความสูงน้อยลงบนมือถือ */
+        text-align: center;  /* จัดข้อความกึ่งกลาง */
     }
     
     .display-4 {
-        font-size: 2.2rem;
+        font-size: 2.2rem;   /* ลดขนาดฟอนต์หัวข้อ */
     }
     
     .card.text-center h3 {
-        font-size: 2.2rem;
+        font-size: 2.2rem;   /* ลดขนาดตัวเลขในการ์ดสถิติ */
     }
     
     .btn-lg {
-        padding: 12px 25px;
-        font-size: 1rem;
+        padding: 12px 25px;  /* ลดขนาดปุ่ม */
+        font-size: 1rem;     /* ลดขนาดฟอนต์ปุ่ม */
     }
     
     .upload-area {
-        padding: 2rem 1rem !important;
+        padding: 2rem 1rem !important; /* ลดระยะห่างในพื้นที่อัปโหลด */
     }
 }
 
+/* สำหรับมือถือขนาดเล็ก (480px ลงไป) */
 @media (max-width: 480px) {
     .display-4 {
-        font-size: 1.8rem;
+        font-size: 1.8rem;   /* ลดขนาดฟอนต์หัวข้อเพิ่มเติม */
     }
     
     .lead {
-        font-size: 1rem;
+        font-size: 1rem;     /* ลดขนาดฟอนต์ข้อความรอง */
     }
     
     .navbar-brand {
-        font-size: 1.2rem;
-    }
-}
+        font-size: 1.2rem;   /* ลดขนาดฟอนต์โลโก้ */
+/* การตั้งค่าเพิ่มเติม - Additional Settings */
 
-/* Section Spacing */
+/* ระยะห่างส่วน - Section Spacing */
 section {
-    scroll-margin-top: 80px;
+    scroll-margin-top: 80px; /* ระยะห่างจากด้านบนเมื่อ scroll ไปยังส่วนนั้น */
 }
 
-/* Smooth Scrolling */
+/* การเลื่อนแบบนุ่มนวล - Smooth Scrolling */
 html {
-    scroll-behavior: smooth;
+    scroll-behavior: smooth; /* ทำให้การเลื่อนหน้านุ่มนวล */
 }
 
-/* Custom Scrollbar */
+/* แถบเลื่อนที่กำหนดเอง - Custom Scrollbar */
 ::-webkit-scrollbar {
-    width: 8px;
+    width: 8px; /* ความกว้างแถบเลื่อน */
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1; /* สีพื้นหลังแถบเลื่อน */
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-color); /* สีของแถบเลื่อน */
+    border-radius: 4px;               /* มุมโค้ง */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-dark); /* สีเมื่อ hover */
+}   width: 8px;
 }
 
 ::-webkit-scrollbar-track {

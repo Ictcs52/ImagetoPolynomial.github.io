@@ -1,59 +1,75 @@
 /**
  * Image to Polynomial Web App - Main JavaScript
  * ระบบแปลงภาพเป็นสมการพหุนาม
+ * 
+ * ระบบนี้ทำงานผ่านขั้นตอนหลัก:
+ * 1. รับภาพจากผู้ใช้ (File Upload/Drag & Drop)
+ * 2. ประมวลผลภาพด้วย Edge Detection (หาขอบของภาพ)
+ * 3. สกัดจุดข้อมูลจากขอบที่พบ
+ * 4. ใช้ Polynomial Regression หาสมการพหุนาม
+ * 5. แสดงผลลัพธ์เป็นกราฟและสมการ
  */
 
-// Global Variables
-let currentImageData = null;
-let processedResults = null;
-let edgePoints = [];
+// ตัวแปรสำคัญที่ใช้เก็บข้อมูลระหว่างการทำงาน
+// Global Variables - ตัวแปรระดับโลกที่ใช้ทั่วทั้งโปรแกรม
+let currentImageData = null;    // เก็บข้อมูลภาพที่อัปโหลด
+let processedResults = null;    // เก็บผลลัพธ์การวิเคราะห์
+let edgePoints = [];           // เก็บจุดข้อมูลที่สกัดจากภาพ
 
+// เริ่มต้นระบบเมื่อหน้าเว็บโหลดเสร็จ
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Image to Polynomial Web App initialized');
-    setupEventListeners();
+    setupEventListeners(); // ตั้งค่า Event Listeners ต่างๆ
 });
 
 /**
- * Setup all event listeners
+ * ตั้งค่า Event Listeners ทั้งหมดที่จำเป็น
+ * Event Listeners คือฟังก์ชันที่รอรับการกระทำจากผู้ใช้ เช่น คลิก, อัปโหลดไฟล์, ลากวาง
  */
 function setupEventListeners() {
-    // File input change
+    // ฟังก์ชันสำหรับการเปลี่ยนแปลงไฟล์ที่เลือก
+    // File input change - เมื่อผู้ใช้เลือกไฟล์
     const fileInput = document.getElementById('fileInput');
     fileInput.addEventListener('change', handleFileSelect);
     
-    // Select file button click
+    // ฟังก์ชันสำหรับปุ่มเลือกไฟล์
+    // Select file button click - เมื่อผู้ใช้คลิกปุ่ม "เลือกไฟล์"
     const selectFileBtn = document.getElementById('selectFileBtn');
     selectFileBtn.addEventListener('click', function(e) {
-        e.stopPropagation(); // Prevent event bubbling
-        fileInput.click();
-    });
-    
+        e.stopPropagation(); // ป้องกันการส่งต่อ event ไปยัง element อื่น
+        fileInput.click();   // เปิด file dialog
+    });    
+    // ฟังก์ชันสำหรับการคลิกที่พื้นที่อัปโหลด (แต่ไม่ใช่ปุ่ม)
     // Upload area click (but not on the button)
     const uploadArea = document.getElementById('uploadArea');
     uploadArea.addEventListener('click', function(e) {
+        // เปิด file dialog เฉพาะเมื่อไม่ได้คลิกที่ปุ่ม
         // Only trigger if not clicking on the button or its children
         if (e.target !== selectFileBtn && !selectFileBtn.contains(e.target)) {
             fileInput.click();
         }
     });
     
+    // ฟังก์ชันสำหรับการเลื่อนหน้าเว็บแบบนุ่มนวล
     // Smooth scrolling for navigation links
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href').substring(1);
-            scrollToSection(targetId);
+            e.preventDefault(); // ป้องกันการทำงานปกติของลิงก์
+            const targetId = this.getAttribute('href').substring(1); // ตัด # ออก
+            scrollToSection(targetId); // เลื่อนไปยังส่วนที่ต้องการ
         });
     });
 }
 
 /**
- * Handle file selection
+ * จัดการการเลือกไฟล์จากผู้ใช้
+ * ตรวจสอบประเภทไฟล์และขนาดไฟล์ก่อนประมวลผล
  */
 function handleFileSelect(event) {
-    const file = event.target.files[0];
+    const file = event.target.files[0]; // รับไฟล์แรกที่เลือก
     if (file) {
+        // ตรวจสอบประเภทไฟล์ - รองรับเฉพาะ JPG และ PNG
         // Validate file type - only JPG and PNG
         const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
         if (!allowedTypes.includes(file.type.toLowerCase())) {
@@ -61,93 +77,114 @@ function handleFileSelect(event) {
             return;
         }
         
+        // ตรวจสอบขนาดไฟล์ (สูงสุด 16MB)
         // Validate file size (16MB max)
         if (file.size > 16 * 1024 * 1024) {
             showAlert('ขนาดไฟล์ใหญ่เกินไป กรุณาเลือกไฟล์ที่มีขนาดไม่เกิน 16MB', 'danger');
             return;
         }
         
+        // โหลดและแสดงตัวอย่างภาพ
         loadImagePreview(file);
     }
 }
 
 /**
- * Handle drag and drop functionality
+ * จัดการฟังก์ชัน Drag and Drop (ลากและวาง)
+ * ให้ผู้ใช้สามารถลากไฟล์มาวางที่พื้นที่อัปโหลดได้
  */
 function handleDrop(event) {
-    event.preventDefault();
-    event.stopPropagation();
+    event.preventDefault();  // ป้องกันการทำงานปกติ (เปิดไฟล์ในเบราว์เซอร์)
+    event.stopPropagation(); // หยุดการส่งต่อ event
     
     const uploadArea = document.getElementById('uploadArea');
-    uploadArea.classList.remove('drag-over');
-      const files = event.dataTransfer.files;
+    uploadArea.classList.remove('drag-over'); // ลบสีไฮไลท์
+    
+    const files = event.dataTransfer.files; // รับไฟล์ที่ลากมา
     if (files.length > 0) {
-        const file = files[0];
+        const file = files[0]; // เอาไฟล์แรก
+        // ตรวจสอบประเภทไฟล์ - รองรับเฉพาะ JPG และ PNG
         // Check file type - only JPG and PNG
         const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
         if (allowedTypes.includes(file.type.toLowerCase())) {
-            loadImagePreview(file);
+            loadImagePreview(file); // โหลดตัวอย่างภาพ
         } else {
             showAlert('ไฟล์ประเภทนี้ไม่รองรับ กรุณาเลือกไฟล์ JPG หรือ PNG เท่านั้น', 'danger');
         }
     }
 }
 
+// ฟังก์ชันที่เรียกเมื่อลากไฟล์เหนือพื้นที่อัปโหลด
 function handleDragOver(event) {
     event.preventDefault();
     event.stopPropagation();
 }
 
+// ฟังก์ชันที่เรียกเมื่อเริ่มลากไฟล์เข้ามาในพื้นที่อัปโหลด
 function handleDragEnter(event) {
     event.preventDefault();
     event.stopPropagation();
-    document.getElementById('uploadArea').classList.add('drag-over');
+    document.getElementById('uploadArea').classList.add('drag-over'); // เพิ่มสีไฮไลท์
 }
 
+// ฟังก์ชันที่เรียกเมื่อลากไฟล์ออกจากพื้นที่อัปโหลด
 function handleDragLeave(event) {
     event.preventDefault();
     event.stopPropagation();
-    document.getElementById('uploadArea').classList.remove('drag-over');
+    document.getElementById('uploadArea').classList.remove('drag-over'); // ลบสีไฮไลท์
 }
 
 /**
- * Load and display image preview
+ * โหลดและแสดงตัวอย่างภาพที่อัปโหลด
+ * ใช้ FileReader API เพื่ออ่านไฟล์และแปลงเป็น Data URL
  */
 function loadImagePreview(file) {
-    const reader = new FileReader();
+    const reader = new FileReader(); // สร้าง FileReader สำหรับอ่านไฟล์
     reader.onload = function(e) {
+        // เมื่ออ่านไฟล์เสร็จแล้ว
         const previewImage = document.getElementById('previewImage');
-        previewImage.src = e.target.result;
+        previewImage.src = e.target.result; // แสดงภาพในหน้าเว็บ
         
+        // แสดงพื้นที่ตัวอย่าง (ภาพ + การตั้งค่า)
         // Show preview area
         document.getElementById('previewArea').classList.remove('d-none');
         
+        // เก็บข้อมูลภาพสำหรับการประมวลผล
         // Store image data for processing
         const img = new Image();
         img.onload = function() {
+            // เก็บข้อมูลสำคัญของภาพ
             currentImageData = {
-                src: e.target.result,
-                width: img.width,
-                height: img.height,
-                file: file
+                src: e.target.result,    // ข้อมูลภาพในรูปแบบ Data URL
+                width: img.width,        // ความกว้างของภาพ
+                height: img.height,      // ความสูงของภาพ
+                file: file              // ไฟล์ต้นฉบับ
             };
             
             showAlert('อัปโหลดสำเร็จ! กรุณาเลือกการตั้งค่าและกดเริ่มวิเคราะห์', 'success');
         };
         img.src = e.target.result;
     };
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(file); // อ่านไฟล์เป็น Data URL
 }
 
 /**
- * Process the image and extract polynomial
+ * ฟังก์ชันหลักในการประมวลผลภาพและสร้างสมการพหุนาม
+ * ขั้นตอนการทำงาน:
+ * 1. ตรวจสอบข้อมูลเบื้องต้น
+ * 2. Edge Detection (หาขอบของภาพ)
+ * 3. สกัดจุดข้อมูลจากขอบ
+ * 4. Polynomial Regression (หาสมการพหุนาม)
+ * 5. แสดงผลลัพธ์
  */
 async function processImage() {
+    // ตรวจสอบว่ามีภาพอัปโหลดแล้วหรือไม่
     if (!currentImageData) {
         showAlert('กรุณาอัปโหลดภาพก่อน', 'warning');
         return;
     }
     
+    // รับดีกรีพหุนามที่ผู้ใช้เลือก
     // Get selected degrees
     const selectedDegrees = getSelectedDegrees();
     if (selectedDegrees.length === 0) {
@@ -155,32 +192,39 @@ async function processImage() {
         return;
     }
     
+    // แสดง Progress Bar
     // Show progress
     showProgress();
     
     try {
+        // ขั้นตอนที่ 1: Edge Detection (ตรวจหาขอบของภาพ)
         // Step 1: Edge Detection
         updateProgress(20, 'กำลังตรวจหาขอบของภาพ...');
         const edgeData = await performEdgeDetection();
         
+        // ขั้นตอนที่ 2: สกัดจุดข้อมูลจากขอบที่ตรวจพบ
         // Step 2: Extract points
         updateProgress(40, 'กำลังสกัดจุดข้อมูล...');
         const points = await extractDataPoints(edgeData);
         
+        // ตรวจสอบว่าพบจุดข้อมูลเพียงพอหรือไม่
         if (points.length < 10) {
             throw new Error('พบจุดข้อมูลน้อยเกินไป กรุณาลองปรับค่า Edge Detection หรือใช้ภาพที่มีเส้นชัดเจนกว่า');
         }
         
+        // ขั้นตอนที่ 3: Polynomial Regression (หาสมการพหุนาม)
         // Step 3: Polynomial regression
         updateProgress(60, 'กำลังวิเคราะห์พหุนาม...');
         const results = await performPolynomialRegression(points, selectedDegrees);
         
+        // ขั้นตอนที่ 4: แสดงผลลัพธ์เป็นกราฟและตาราง
         // Step 4: Display results
         updateProgress(80, 'กำลังสร้างกราฟและผลลัพธ์...');
         await displayResults(results, points, edgeData);
         
         updateProgress(100, 'เสร็จสิ้น!');
         
+        // ซ่อน Progress Bar และเลื่อนไปยังส่วนผลลัพธ์
         // Hide progress and show results
         setTimeout(() => {
             hideProgress();
@@ -195,15 +239,19 @@ async function processImage() {
 }
 
 /**
- * Perform edge detection on the image
+ * ประมวลผล Edge Detection บนภาพ
+ * Edge Detection คือเทคนิคการหาขอบของวัตถุในภาพ
+ * ใช้อัลกอริทึม Canny Edge Detection
  */
 async function performEdgeDetection() {
     return new Promise((resolve) => {
+        // สร้าง Canvas สำหรับประมวลผลภาพ
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
         const img = new Image();
         
         img.onload = function() {
+            // ปรับขนาดภาพหากใหญ่เกินไป (เพื่อประสิทธิภาพ)
             // Resize image if too large
             const maxSize = 800;
             let { width, height } = img;
@@ -217,20 +265,23 @@ async function performEdgeDetection() {
             canvas.width = width;
             canvas.height = height;
             
+            // วาดภาพลงใน Canvas
             // Draw image to canvas
             ctx.drawImage(img, 0, 0, width, height);
             
+            // รับข้อมูลพิกเซลของภาพ
             // Get image data
             const imageData = ctx.getImageData(0, 0, width, height);
             
+            // ใช้อัลกอริทึม Canny Edge Detection
             // Apply edge detection
             const edgeData = applyCanny(imageData);
             
             resolve({
-                imageData: edgeData,
-                canvas: canvas,
-                width: width,
-                height: height
+                imageData: edgeData,  // ข้อมูลภาพหลัง Edge Detection
+                canvas: canvas,       // Canvas ที่ใช้ประมวลผล
+                width: width,         // ความกว้างภาพ
+                height: height        // ความสูงภาพ
             });
         };
         
@@ -239,58 +290,73 @@ async function performEdgeDetection() {
 }
 
 /**
- * Simple Canny edge detection implementation
+ * อัลกอริทึม Canny Edge Detection แบบง่าย
+ * ขั้นตอนการทำงาน:
+ * 1. แปลงภาพเป็น Grayscale (ขาวดำ)
+ * 2. ใช้ Gaussian Blur เพื่อลด noise
+ * 3. ใช้ Sobel Operator หา gradient (ความชัน)
+ * 4. ใช้ threshold กรองขอบที่ชัดเจน
  */
 function applyCanny(imageData) {
-    const data = imageData.data;
+    const data = imageData.data;  // ข้อมูลพิกเซล (RGBA)
     const width = imageData.width;
     const height = imageData.height;
     
+    // ขั้นตอนที่ 1: แปลงเป็น Grayscale (ขาวดำ)
     // Convert to grayscale
     const gray = new Uint8ClampedArray(width * height);
     for (let i = 0; i < data.length; i += 4) {
         const idx = i / 4;
+        // สูตรแปลง RGB เป็น Grayscale
         gray[idx] = Math.round(0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2]);
     }
     
+    // ขั้นตอนที่ 2: ใช้ Gaussian Blur ลด noise
     // Apply Gaussian blur
     const blurred = applyGaussianBlur(gray, width, height);
     
+    // ขั้นตอนที่ 3: ใช้ Sobel Operator หา gradient และใช้ threshold
     // Calculate gradients using Sobel operator
-    const threshold = document.getElementById('edgeThreshold').value;
+    const threshold = document.getElementById('edgeThreshold').value; // รับค่าจากผู้ใช้
     const edges = applySobel(blurred, width, height, threshold);
     
+    // ขั้นตอนที่ 4: แปลงกลับเป็นรูปแบบ ImageData
     // Convert back to ImageData format
     const edgeImageData = new ImageData(width, height);
     for (let i = 0; i < edges.length; i++) {
         const idx = i * 4;
         const value = edges[i];
-        edgeImageData.data[idx] = value;     // R
-        edgeImageData.data[idx + 1] = value; // G
-        edgeImageData.data[idx + 2] = value; // B
-        edgeImageData.data[idx + 3] = 255;   // A
+        edgeImageData.data[idx] = value;     // R (Red)
+        edgeImageData.data[idx + 1] = value; // G (Green)
+        edgeImageData.data[idx + 2] = value; // B (Blue)
+        edgeImageData.data[idx + 3] = 255;   // A (Alpha - ความโปร่งใส)
     }
     
     return edgeImageData;
 }
 
 /**
- * Apply Gaussian blur
+ * ใช้ Gaussian Blur เพื่อลด noise ในภาพ
+ * Gaussian Blur ช่วยทำให้ภาพเบลอเล็กน้อย ลดจุดผิดปกติ
+ * ใช้ Kernel (เมทริกซ์) 3x3 ในการคำนวณ
  */
 function applyGaussianBlur(data, width, height) {
+    // Gaussian Kernel 3x3 (ตัวกรองแบบเกาส์เซียน)
     const kernel = [
         [1, 2, 1],
         [2, 4, 2],
         [1, 2, 1]
     ];
-    const kernelWeight = 16;
+    const kernelWeight = 16; // ผลรวมของค่าใน kernel
     
     const result = new Uint8ClampedArray(width * height);
     
+    // วนลูปทุกพิกเซล (ยกเว้นขอบ)
     for (let y = 1; y < height - 1; y++) {
         for (let x = 1; x < width - 1; x++) {
             let sum = 0;
             
+            // ใช้ kernel คำนวณค่าเฉลี่ยถ่วงน้ำหนัก
             for (let ky = -1; ky <= 1; ky++) {
                 for (let kx = -1; kx <= 1; kx++) {
                     const idx = (y + ky) * width + (x + kx);
@@ -306,15 +372,19 @@ function applyGaussianBlur(data, width, height) {
 }
 
 /**
- * Apply Sobel operator for edge detection
+ * ใช้ Sobel Operator สำหรับ Edge Detection
+ * Sobel Operator หาการเปลี่ยนแปลงความเข้มของสี (gradient)
+ * ในทิศทาง X และ Y เพื่อหาขอบของวัตถุ
  */
 function applySobel(data, width, height, threshold) {
+    // Sobel Kernel สำหรับทิศทาง X (แนวตั้ง)
     const sobelX = [
         [-1, 0, 1],
         [-2, 0, 2],
         [-1, 0, 1]
     ];
     
+    // Sobel Kernel สำหรับทิศทาง Y (แนวนอน)
     const sobelY = [
         [-1, -2, -1],
         [0, 0, 0],
@@ -323,20 +393,24 @@ function applySobel(data, width, height, threshold) {
     
     const result = new Uint8ClampedArray(width * height);
     
+    // วนลูปทุกพิกเซล (ยกเว้นขอบ)
     for (let y = 1; y < height - 1; y++) {
         for (let x = 1; x < width - 1; x++) {
-            let gx = 0, gy = 0;
+            let gx = 0, gy = 0; // gradient ในทิศทาง X และ Y
             
+            // คำนวณ gradient ด้วย Sobel Kernel
             for (let ky = -1; ky <= 1; ky++) {
                 for (let kx = -1; kx <= 1; kx++) {
                     const idx = (y + ky) * width + (x + kx);
                     const pixel = data[idx];
-                    gx += pixel * sobelX[ky + 1][kx + 1];
-                    gy += pixel * sobelY[ky + 1][kx + 1];
+                    gx += pixel * sobelX[ky + 1][kx + 1]; // gradient X
+                    gy += pixel * sobelY[ky + 1][kx + 1]; // gradient Y
                 }
             }
             
+            // คำนวณขนาดของ gradient (magnitude)
             const magnitude = Math.sqrt(gx * gx + gy * gy);
+            // ใช้ threshold ตัดสินใจว่าเป็นขอบหรือไม่
             result[y * width + x] = magnitude > threshold ? 255 : 0;
         }
     }
@@ -345,83 +419,98 @@ function applySobel(data, width, height, threshold) {
 }
 
 /**
- * Extract data points from edge detection result
+ * สกัดจุดข้อมูลจากผลลัพธ์ Edge Detection
+ * แปลงพิกเซลสีขาว (ขอบ) เป็นพิกัด (x, y) สำหรับการวิเคราะห์
  */
 async function extractDataPoints(edgeData) {
     const points = [];
     const { imageData, width, height } = edgeData;
     const data = imageData.data;
     
+    // หาพิกเซลขอบและแปลงเป็นพิกัด
     // Find edge pixels and convert to coordinate points
     for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
             const idx = (y * width + x) * 4;
-            if (data[idx] > 128) { // White pixel (edge)
+            if (data[idx] > 128) { // พิกเซลสีขาว (ขอบ)
+                // แปลงพิกัดภาพเป็นพิกัดกราฟ
                 // Convert image coordinates to graph coordinates
-                // Flip Y axis and normalize
+                // กลับแกน Y และ normalize ให้อยู่ในช่วง 0-1
                 points.push({
-                    x: x / width,
-                    y: (height - y) / height
+                    x: x / width,              // normalize X (0-1)
+                    y: (height - y) / height   // กลับแกน Y และ normalize (0-1)
                 });
             }
         }
     }
     
+    // กำจัดจุดผิดปกติด้วยวิธี IQR (Interquartile Range)
     // Remove outliers using IQR method
     const cleanedPoints = removeOutliers(points);
     
+    // เรียงจุดตามแกน X
     // Sort points by x coordinate
     cleanedPoints.sort((a, b) => a.x - b.x);
     
-    edgePoints = cleanedPoints;
+    edgePoints = cleanedPoints; // เก็บไว้ใช้ภายหลัง
     return cleanedPoints;
 }
 
 /**
- * Remove outliers using IQR method
+ * กำจัดจุดผิดปกติ (Outliers) ด้วยวิธี IQR (Interquartile Range)
+ * IQR คือช่วงระหว่าง Quartile ที่ 1 และ 3 
+ * จุดที่อยู่นอกช่วง Q1-1.5*IQR ถึง Q3+1.5*IQR จะถือว่าเป็น Outlier
  */
 function removeOutliers(points) {
-    if (points.length < 4) return points;
+    if (points.length < 4) return points; // ถ้าจุดน้อยเกินไปไม่ต้องกรอง
     
+    // คำนวณ Quartiles สำหรับค่า Y
     // Calculate quartiles for y values
     const yValues = points.map(p => p.y).sort((a, b) => a - b);
-    const q1Index = Math.floor(yValues.length * 0.25);
-    const q3Index = Math.floor(yValues.length * 0.75);
-    const q1 = yValues[q1Index];
-    const q3 = yValues[q3Index];
-    const iqr = q3 - q1;
+    const q1Index = Math.floor(yValues.length * 0.25);  // ตำแหน่ง Q1
+    const q3Index = Math.floor(yValues.length * 0.75);  // ตำแหน่ง Q3
+    const q1 = yValues[q1Index];  // ค่า Q1
+    const q3 = yValues[q3Index];  // ค่า Q3
+    const iqr = q3 - q1;          // ค่า IQR
     
-    const lowerBound = q1 - 1.5 * iqr;
-    const upperBound = q3 + 1.5 * iqr;
+    // คำนวณช่วงที่ยอมรับได้
+    const lowerBound = q1 - 1.5 * iqr;  // ขอบเขตล่าง
+    const upperBound = q3 + 1.5 * iqr;  // ขอบเขตบน
     
+    // กรองจุดที่อยู่ในช่วงที่ยอมรับได้
     // Filter out outliers
     return points.filter(p => p.y >= lowerBound && p.y <= upperBound);
 }
 
 /**
- * Perform polynomial regression for multiple degrees
+ * ทำ Polynomial Regression สำหรับหลายดีกรี
+ * Polynomial Regression คือการหาสมการพหุนามที่เหมาะสมที่สุดกับจุดข้อมูล
+ * เปรียบเทียบดีกรีต่างๆ และเรียงตามคะแนน R² (ยิ่งสูงยิ่งดี)
  */
 async function performPolynomialRegression(points, degrees) {
     const results = [];
     
+    // วนลูปหาสมการพหุนามสำหรับแต่ละดีกรี
     for (const degree of degrees) {
-        const result = fitPolynomial(points, degree);
+        const result = fitPolynomial(points, degree); // หาสมการพหุนาม
         results.push({
-            degree: degree,
-            coefficients: result.coefficients,
-            r2: result.r2,
-            rmse: result.rmse,
-            mae: result.mae
+            degree: degree,                    // ดีกรีของพหุนาม
+            coefficients: result.coefficients, // สัมประสิทธิ์ของสมการ
+            r2: result.r2,                    // R² Score (ความแม่นยำ)
+            rmse: result.rmse,                // Root Mean Square Error
+            mae: result.mae                   // Mean Absolute Error
         });
     }
     
+    // เรียงผลลัพธ์ตาม R² Score (จากมากไปน้อย)
     // Sort by R² score (descending)
     results.sort((a, b) => b.r2 - a.r2);
     
+    // เก็บผลลัพธ์สำหรับใช้ภายหลัง
     processedResults = {
-        polynomials: results,
-        dataPoints: points,
-        bestPolynomial: results[0]
+        polynomials: results,          // ผลลัพธ์ทุกดีกรี
+        dataPoints: points,            // จุดข้อมูลต้นฉบับ
+        bestPolynomial: results[0]     // พหุนามที่ดีที่สุด (R² สูงสุด)
     };
     
     return processedResults;
